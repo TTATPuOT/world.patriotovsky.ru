@@ -1,37 +1,15 @@
 <?php
 
-use Illuminate\Http\Request;
-use App\Gallery;
-
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::post('/gallery/create', function (Request $request) {
-    $result = [
-        'ok' => false
-    ];
+Route::post('/gallery/create', 'Gallery\GalleryController@createGallery');
 
-    $validator = Validator::make($request->all(), [
-        'name' => 'required|max:155',
-        'user' => 'required|integer',
-        'lat' => 'required',
-        'lng' => 'required',
-    ]);
+Route::post('register', 'Auth\CustomAuthController@register');
 
-    if (!$validator->fails()) {
+Route::post('login', 'Auth\CustomAuthController@login');
 
-        $gallery = new Gallery();
-        $gallery->name = $request->name;
-        $gallery->user = $request->user;
-        $gallery->lat = $request->lat;
-        $gallery->lng = $request->lng;
-        $gallery->save();
+Route::post('logout', 'Auth\CustomAuthController@logout');
 
-        $result['ok'] = true;
-    } else{
-        $request['message'] = 'Ошибка валидации данных';
-    }
-
-    return $result;
-});
+// Route::get('/home', 'HomeController@index')->name('home');
