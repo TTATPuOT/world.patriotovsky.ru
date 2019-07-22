@@ -12,6 +12,8 @@ Route::post('/gallery/create', 'Gallery\GalleryController@create');
 Route::post('/gallery/update', 'Gallery\GalleryController@update');
 Route::post('/gallery/delete', 'Gallery\GalleryController@delete');
 
+Route::post('/photo/create', 'Photo\PhotoController@create');
+
 Route::post('check', 'Auth\CustomAuthController@check');
 
 // Route::get('/home', 'HomeController@index')->name('home');

@@ -76,7 +76,7 @@ class GalleryController extends Controller
 
             $gallery = Gallery::where('id', $request->id) -> first();
 
-            if ($user->id == $gallery->user) {
+            if ($gallery and $user->id == $gallery->user) {
                 $gallery->name = ($request->name) ? $request->name : $gallery->name;
                 $gallery->lat = ($request->lat) ? $request->lat : $gallery->lat;
                 $gallery->lng = ($request->lng) ? $request->lng : $gallery->lng;
