@@ -11,7 +11,7 @@ use App\Gallery;
 
 class GalleryController extends Controller
 {
-    public function createGallery(Request $request) {
+    public function create(Request $request) {
         $result = [
             'ok' => false
         ];
@@ -46,6 +46,85 @@ class GalleryController extends Controller
             $gallery->save();
 
             $result['ok'] = true;
+        } else{
+            $result['message'] = 'Ошибка валидации данных';
+        }
+
+        return $result;
+    }
+
+    public function update(Request $request) {
+        $result = [
+            'ok' => false
+        ];
+
+        $user = User::where('remember_token', $request->token) -> first();
+
+        if (!$user or $request->token === null) {
+            $result['message'] = 'Ошибка аутентификации';
+            return $result;
+        }
+
+        $validator = Validator::make($request->all(), [
+            'id' => 'required|integer',
+            'name' => 'max:155',
+            'lat' => 'numeric',
+            'lng' => 'numeric'
+        ]);
+
+        if (!$validator->fails()) {
+
+            $gallery = Gallery::where('id', $request->id) -> first();
+
+            if ($user->id == $gallery->user) {
+                $gallery->name = ($request->name) ? $request->name : $gallery->name;
+                $gallery->lat = ($request->lat) ? $request->lat : $gallery->lat;
+                $gallery->lng = ($request->lng) ? $request->lng : $gallery->lng;
+                $gallery->save();
+
+                $result['ok'] = true;
+                $result['result'] = [
+                    'name' => $gallery->name,
+                    'lat' => $gallery->lat,
+                    'lng' => $gallery->lng
+                ];
+            } else {
+                $result['message'] = 'Галерея принадлежит другому пользователю';
+            }
+        } else{
+            $result['message'] = 'Ошибка валидации данных';
+        }
+
+        return $result;
+    }
+
+    public function delete(Request $request) {
+        $result = [
+            'ok' => false
+        ];
+
+        $user = User::where('remember_token', $request->token) -> first();
+
+        if (!$user or $request->token === null) {
+            $result['message'] = 'Ошибка аутентификации';
+            return $result;
+        }
+
+        $validator = Validator::make($request->all(), [
+            'id' => 'required|integer'
+        ]);
+
+        if (!$validator->fails()) {
+
+            $gallery = Gallery::where('id', $request->id) -> first();
+
+            if ($user->id == $gallery->user) {
+                $gallery->forceDelete();
+
+                $result['ok'] = true;
+            } else {
+                $result['message'] = 'Галерея принадлежит другому пользователю';
+            }
         } else{
             $result['message'] = 'Ошибка валидации данных';
         }

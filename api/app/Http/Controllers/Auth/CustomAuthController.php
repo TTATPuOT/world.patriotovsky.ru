@@ -97,4 +97,26 @@ class CustomAuthController extends Controller
 
         return $result;
     }
+
+    public function check(Request $request) {
+        $result = [
+            'ok' => false
+        ];
+
+        $user = User::where('remember_token', $request->token) -> first();
+
+        if (!$user or $request->token === null) {
+            $result['message'] = 'Ошибка аутентификации';
+            return $result;
+        }
+
+        $result['ok'] = true;
+        $result['data'] = [
+            'id' => $user->id,
+            'name' => $user->name,
+            'email' => $user->email
+        ];
+
+        return $result;
+    }
 }
