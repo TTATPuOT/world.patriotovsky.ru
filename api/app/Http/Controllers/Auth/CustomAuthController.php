@@ -28,13 +28,12 @@ class CustomAuthController extends Controller
             $user->name = $request->name;
             $user->email = $request->email;
             $user->password = Hash::make($request->password);
+            $user->remember_token = Hash::make($request->password . now());
             $user->save();
 
             $result['ok'] = true;
             $result['result'] = [
-                'user_id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email
+                'token' => $user->remember_token
             ];
         } else{
             $result['message'] = 'Ошибка валидации данных';

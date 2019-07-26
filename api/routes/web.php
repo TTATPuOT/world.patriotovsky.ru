@@ -16,7 +16,7 @@ Route::post('/gallery/getAll', 'Gallery\GalleryController@getAll');
 
 Route::post('/photo/create', 'Photo\PhotoController@create')->middleware('optimizeImages');
 
-Route::post('/user/info', 'User\UserController@info');
+Route::post('/user/get', 'User\UserController@get');
 
 Route::post('check', 'Auth\CustomAuthController@check');
 

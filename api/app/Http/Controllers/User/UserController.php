@@ -13,7 +13,7 @@ use App\Photo;
 
 class UserController extends Controller
 {
-    public function info(Request $request) {
+    public function get(Request $request) {
         $result = [
             'ok' => false
         ];
@@ -26,6 +26,7 @@ class UserController extends Controller
         }
 
         $result['result'] = [
+            'id' => $user->id,
             'name' => $user->name,
             'email' => $user->email,
             'galleries' => 0,
