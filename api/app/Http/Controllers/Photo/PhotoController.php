@@ -46,15 +46,15 @@ class PhotoController extends Controller
                 $name = time();
 
                 $image = Image::make($request->file('image'));
-                $image->encode('jpg', '100');
+                $image->encode('jpg');
                 $imageName = $name . '.jpg';
-                $image->save($path . $imageName, '100', 'jpg');
+                $image->save($path . $imageName, '75', 'jpg');
 
                 $thumb = Image::make($request->file('image'));
-                $thumb->encode('jpg', '100');
+                $thumb->encode('jpg');
                 $thumb->fit(100);
                 $thumbName = $name . '-100x100.jpg';
-                $thumb->save($path . $thumbName, '100', 'jpg');
+                $thumb->save($path . $thumbName, '75', 'jpg');
 
                 $photo->path = $imageName;
                 $photo->save();
