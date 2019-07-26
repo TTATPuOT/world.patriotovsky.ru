@@ -47,6 +47,12 @@ class GalleryController extends Controller
             $gallery->save();
 
             $result['ok'] = true;
+            $result['result'] = [
+                'id' => $gallery->id,
+                'name' => $gallery->name,
+                'lat' => $gallery->lat,
+                'lng' => $gallery->lng
+            ];
         } else{
             $result['message'] = 'Ошибка валидации данных';
         }
