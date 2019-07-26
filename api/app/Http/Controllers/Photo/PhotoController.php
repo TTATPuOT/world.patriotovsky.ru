@@ -48,13 +48,13 @@ class PhotoController extends Controller
                 $image = Image::make($request->file('image'));
                 $image->encode('jpg');
                 $imageName = $name . '.jpg';
-                $image->save($path . $imageName, '75', 'jpg');
+                $image->save($path . $imageName, '90', 'jpg');
 
                 $thumb = Image::make($request->file('image'));
                 $thumb->encode('jpg');
                 $thumb->fit(100);
                 $thumbName = $name . '-100x100.jpg';
-                $thumb->save($path . $thumbName, '75', 'jpg');
+                $thumb->save($path . $thumbName, '90', 'jpg');
 
                 $photo->path = $imageName;
                 $photo->save();

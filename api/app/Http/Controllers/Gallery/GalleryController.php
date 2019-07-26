@@ -192,19 +192,24 @@ class GalleryController extends Controller
         }
 
         foreach(Gallery::where('user', $user->id)->cursor() as $gallery) {
-            $photo = Photo::where('gallery', $gallery->id) -> first();
-
-            $result['result'][] = [
+            $array = [
                 'id' => $gallery->id,
                 'name' => $gallery->name,
                 'lat' => $gallery->lat,
                 'lng' => $gallery->lng,
-                'photo' => [
+                'photo' => null
+            ];;
+
+            $photo = Photo::where('gallery', $gallery->id)->first();
+            if (!empty($photo)) {
+                $array['photo'] = [
                     'id' => $photo->id,
                     'description' => $photo->description,
                     'path' => $photo->path
-                ]
-            ];
+                ];
+            }
+
+            $result['result'][] = $array;
         }
 
         $result['ok'] = true;
