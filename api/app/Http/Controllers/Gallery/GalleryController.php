@@ -4,10 +4,11 @@ namespace App\Http\Controllers\Gallery;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+// use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use App\User;
 use App\Gallery;
+use App\Photo;
 
 class GalleryController extends Controller
 {
@@ -128,6 +129,79 @@ class GalleryController extends Controller
         } else{
             $result['message'] = 'Ошибка валидации данных';
         }
+
+        return $result;
+    }
+
+    public function get(Request $request) {
+        $result = [
+            'ok' => false
+        ];
+
+        $user = User::where('remember_token', $request->token) -> first();
+
+        if (!$user or $request->token === null) {
+            $result['message'] = 'Ошибка аутентификации';
+            return $result;
+        }
+
+        $validator = Validator::make($request->all(), [
+            'id' => 'required|integer'
+        ]);
+
+        if (!$validator->fails()) {
+
+            $gallery = Gallery::where('id', $request->id) -> first();
+
+            if ($gallery and $user->id == $gallery->user) {
+                foreach(Photo::where('gallery', $gallery->id)->cursor() as $photo) {
+                    $result['result'][] = [
+                        'id' => $photo->id,
+                        'description' => $photo->description,
+                        'path' => $photo->path
+                    ];
+                }
+
+                $result['ok'] = true;
+            } else {
+                $result['message'] = 'Галерея принадлежит другому пользователю или не существует';
+            }
+        } else{
+            $result['message'] = 'Ошибка валидации данных';
+        }
+
+        return $result;
+    }
+
+    public function getAll(Request $request) {
+        $result = [
+            'ok' => false
+        ];
+
+        $user = User::where('remember_token', $request->token) -> first();
+
+        if (!$user or $request->token === null) {
+            $result['message'] = 'Ошибка аутентификации';
+            return $result;
+        }
+
+        foreach(Gallery::where('user', $user->id)->cursor() as $gallery) {
+            $photo = Photo::where('gallery', $gallery->id) -> first();
+
+            $result['result'][] = [
+                'id' => $gallery->id,
+                'name' => $gallery->name,
+                'lat' => $gallery->lat,
+                'lng' => $gallery->lng,
+                'photo' => [
+                    'id' => $photo->id,
+                    'description' => $photo->description,
+                    'path' => $photo->path
+                ]
+            ];
+        }
+
+        $result['ok'] = true;
 
         return $result;
     }
