@@ -89,7 +89,7 @@ class GalleryController extends Controller
                     'lng' => $gallery->lng
                 ];
             } else {
-                $result['message'] = 'Галерея принадлежит другому пользователю';
+                $result['message'] = 'Галерея принадлежит другому пользователю или не существует';
             }
         } else{
             $result['message'] = 'Ошибка валидации данных';
@@ -118,12 +118,12 @@ class GalleryController extends Controller
 
             $gallery = Gallery::where('id', $request->id) -> first();
 
-            if ($user->id == $gallery->user) {
+            if ($gallery and $user->id == $gallery->user) {
                 $gallery->forceDelete();
 
                 $result['ok'] = true;
             } else {
-                $result['message'] = 'Галерея принадлежит другому пользователю';
+                $result['message'] = 'Галерея принадлежит другому пользователю или не существует';
             }
         } else{
             $result['message'] = 'Ошибка валидации данных';
